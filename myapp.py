@@ -28,14 +28,11 @@ def main():
             print(f"An error occurred: {e}")
         # Display the results
         st.write("Data Integrity Suite Results:")
-        suite_result.show()
-        suite_result.save_as_html('suite_result.html')
+        html_result = suite_result.save_as_html()
+
+        # Display the HTML in Streamlit
+        st.components.v1.html(html_result, height=800, scrolling=True)
         
-        # Display the HTML result in an iframe
-        st.markdown(
-            f'<iframe src="suite_result.html" width="100%" height="600"></iframe>',
-            unsafe_allow_html=True
-        )
 
 if __name__ == "__main__":
     main()
