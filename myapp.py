@@ -22,8 +22,10 @@ def main():
         
         # Run Data Integrity Suite
         suite = data_integrity()
-        suite_result = suite.run(dataset)
-        
+        try:
+            suite_result = suite.run(dataset)
+        except BrokenPipeError as e:
+            print(f"An error occurred: {e}")
         # Display the results
         st.write("Data Integrity Suite Results:")
         suite_result.show()
