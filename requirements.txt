@@ -1,2 +1,3 @@
 deepchecks
 openpyxl
+streamlit==1.34
