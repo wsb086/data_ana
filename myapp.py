@@ -24,9 +24,9 @@ def main():
         suite = data_integrity()
         try:
             suite_result = suite.run(dataset)
-            
+            suite_result.show_in_window()
             # Add the report to the Streamlit app
-            st.write(suite_result)
+            #st.write(suite_result)
         except BrokenPipeError as e:
             print(f"An error occurred: {e}")
         
