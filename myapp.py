@@ -24,14 +24,15 @@ def main():
         suite = data_integrity()
         try:
             suite_result = suite.run(dataset)
+            
+            # Report the results using StreamlitReporter
+            reporter = StreamlitReporter()
+            report = reporter.render(suite_result)
+            
+            # Add the report to the Streamlit app
+            st.write(report)
         except BrokenPipeError as e:
             print(f"An error occurred: {e}")
-        # Display the results
-        st.write("Data Integrity Suite Results:")
-        html_result = suite_result.save_as_html()
-
-        # Display the HTML in Streamlit
-        st.components.v1.html(html_result, height=800, scrolling=True)
         
 
 if __name__ == "__main__":
