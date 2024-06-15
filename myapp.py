@@ -25,12 +25,8 @@ def main():
         try:
             suite_result = suite.run(dataset)
             
-            # Report the results using StreamlitReporter
-            reporter = StreamlitReporter()
-            report = reporter.render(suite_result)
-            
             # Add the report to the Streamlit app
-            st.write(report)
+            st.write(suite_result)
         except BrokenPipeError as e:
             print(f"An error occurred: {e}")
         
