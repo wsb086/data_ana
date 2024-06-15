@@ -8,11 +8,11 @@ def main():
     st.title("Deepchecks Data Integrity Suite Analysis")
 
     # File uploader
-    uploaded_file = st.file_uploader("Choose an Excel file", type="xlsx")
+    uploaded_file = st.file_uploader("Choose an Excel file", type="csv")
     
     if uploaded_file is not None:
         # Read the Excel file
-        df = pd.read_excel(uploaded_file)
+        df = pd.read_csv(uploaded_file)
         
         st.write("Dataframe Preview:")
         st.write(df.head())
