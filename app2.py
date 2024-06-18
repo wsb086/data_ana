@@ -28,14 +28,7 @@ if uploaded_file is not None:
     st.write("t-SNE Results Preview:")
     st.write(tsne_df.head())
     
-    # 确保labels.name是一个字符串
-    if isinstance(labels.name, str):
-        hover_data = [labels.name]
-    else:
-        hover_data = ['Label']
 
-
-    
     # 可视化t-SNE结果
     fig = px.scatter(tsne_df, x='TSNE1', y='TSNE2', color='Label', hover_data=hover_data)
     st.plotly_chart(fig)
