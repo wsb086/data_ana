@@ -30,14 +30,9 @@ if uploaded_file is not None:
     
 
     # 可视化t-SNE结果
-    fig = px.scatter(tsne_df, x='TSNE1', y='TSNE2', color='Label', hover_data=hover_data)
+    fig = px.scatter(tsne_df, x='TSNE1', y='TSNE2', color='Label')
     st.plotly_chart(fig)
-
-    # 显示详细信息
-    selected_points = st.selectbox("选择一个点查看详细信息", tsne_df.index)
-    if selected_points is not None:
-        st.write("详细信息:")
-        st.write(data.iloc[selected_points])
+)
 
 # 如果没有上传文件，使用示例数据集
 else:
