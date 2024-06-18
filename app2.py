@@ -11,8 +11,8 @@ if uploaded_file is not None:
     data = pd.read_csv(uploaded_file)
     
     # 假设最后一列是类别，前面的列是特征
-    labels = data.iloc[:, -1]
-    features = data.iloc[:, :-1]
+    labels = data.iloc[:, 0]
+    features = data.iloc[:, 1:]
     
     # 进行t-SNE降维
     tsne = TSNE(n_components=2, random_state=42)
@@ -33,6 +33,8 @@ if uploaded_file is not None:
         hover_data = [labels.name]
     else:
         hover_data = ['Label']
+
+
     
     # 可视化t-SNE结果
     fig = px.scatter(tsne_df, x='TSNE1', y='TSNE2', color='Label', hover_data=hover_data)
