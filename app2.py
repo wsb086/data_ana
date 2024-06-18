@@ -32,7 +32,7 @@ if uploaded_file is not None:
     # 可视化t-SNE结果
     fig = px.scatter(tsne_df, x='TSNE1', y='TSNE2', color='Label')
     st.plotly_chart(fig)
-)
+
 
 # 如果没有上传文件，使用示例数据集
 else:
