@@ -1,11 +1,11 @@
 import streamlit as st
 import pandas as pd
-from autogluon.tabular import TabularPredictor
 import shap
 import matplotlib.pyplot as plt
 import matplotlib.pyplot as plt
 import seaborn as sns
 import warnings
+from autogluon.tabular import TabularDataset, TabularPredictor
 warnings.filterwarnings('ignore')
 # 设置 Seaborn 的主题和样式
 sns.set_theme(style="whitegrid", palette="deep")
