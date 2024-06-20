@@ -15,7 +15,7 @@ uploaded_file = st.file_uploader("上传 CSV 或 XLSX 文件", type=["csv", "xls
 
 if use_default_data:
     # 使用默认文件
-    df = pd.read_excel("data_alive.csv")
+    df = pd.read_csv("data_alive.csv")
 else:
     if uploaded_file is not None:
         if uploaded_file.name.endswith('.csv'):
