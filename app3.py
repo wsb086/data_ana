@@ -15,13 +15,13 @@ uploaded_file = st.file_uploader("上传 CSV 或 XLSX 文件", type=["csv", "xls
 
 if use_default_data:
     # 使用默认文件
-    df = pd.read_excel("data_alive.xlsx", index=False)
+    df = pd.read_excel("data_alive.xlsx")
 else:
     if uploaded_file is not None:
         if uploaded_file.name.endswith('.csv'):
             df = pd.read_csv(uploaded_file)
         else:
-            df = pd.read_excel(uploaded_file, index=False)
+            df = pd.read_excel(uploaded_file)
     else:
         df = None  # 如果没有上传文件且没有选择使用默认数据，那么数据框为空
 
