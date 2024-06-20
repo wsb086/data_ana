@@ -2,3 +2,5 @@ deepchecks
 openpyxl
 streamlit==1.34
 plotly
+autogluon
+shap
