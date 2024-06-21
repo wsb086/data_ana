@@ -43,9 +43,9 @@ if data_condition:
     
     # 选择自变量
     default_features = [col for col in df.columns if col not in [id_var, target_var]]
-    selected_features = st.multiselect("选择自变量", default_features, default=default_features)
+    selected_features = st.multiselect("选择自变量", default_features, default=[])
     df_s=df[selected_features+[id_var,target_var]]
-    if df_s is not None:
+    if df_s and selected_features!=[] and id_var and target_var:
         fit_begin = st.button("开始拟合模型！")
         if fit_begin:
             dataset = TabularDataset(df_s)
