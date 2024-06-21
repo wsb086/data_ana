@@ -44,7 +44,7 @@ if df is not None:
     df_s=df[selected_features+[id_var,target_var]]
     if df_s is not None:
         fit_begin = st.button("开始拟合模型！")
-        if fit begin:
+        if fit_begin:
             dataset = TabularDataset(df_s)
             predictor = TabularPredictor(label=target_var, problem_type='regression').fit(dataset,hyperparameters={'GBM':{},'XGB':{}})
             predictions = predictor.predict(dataset)
