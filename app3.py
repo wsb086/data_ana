@@ -155,13 +155,15 @@ elif page == "单条数据解释":
                             shap_values_single = explainer(single_data[st.session_state.selected_features+[st.session_state.target_var]])
                             
                             # 在一个新容器中显示 SHAP force_plot
-                            with st.container():
+                             with st.container():
                                 st.subheader('force_plot')
-                                shap.force_plot(shap_values_single[0])
-                                st.pyplot(bbox_inches='tight')
+                                force_plot_html = shap.force_plot(shap_values_single[0], show=False)
+                                st.components.v1.html(force_plot_html.html(), height=500)
+
                                 st.subheader('waterfall_plot')
-                                shap.plots.waterfall(shap_values_single[0])
-                                st.pyplot(bbox_inches='tight')
+                                fig, ax = plt.subplots()
+                                shap.plots.waterfall(shap_values_single[0], ax=ax)
+                                st.pyplot(fig)
                     else:
                         st.write("未找到相应的数据，请检查ID是否正确。")
                 except ValueError:
