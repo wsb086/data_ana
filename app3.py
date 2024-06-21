@@ -48,7 +48,7 @@ if st.session_state.data_condition:
     fit_begin = st.button("开始拟合模型！")
 
     if fit_begin:
-        df_s = df[selected_features + [id_var, target_var]]
+        df_s = df[selected_features + [target_var]]
         dataset = TabularDataset(df_s)
         predictor = TabularPredictor(label=target_var, problem_type='regression').fit(dataset, hyperparameters={'GBM': {}, 'XGB': {}})
         st.session_state.predictor = predictor
@@ -76,27 +76,24 @@ if st.session_state.model_fitted and st.session_state.predictor:
 
         if user_id in df[id_var].values:
             instance = df[df[id_var] == user_id].iloc[0]
-            st.write(f"选择的实例: {instance.to_dict()}")
-
-            # 创建SHAP解释器
-            explainer = shap.Explainer(st.session_state.predictor.model)
+            model_to_explain = predictor._trainer.load_model('WeightedEnsemble_L2')
+            explainer = shap.Explainer(model_to_explain)
             shap_values = explainer(instance[selected_features])
-
-            # 生成并展示SHAP图
-            st.subheader("SHAP解释图")
-
-            # SHAP force plot
-            shap.force_plot(explainer.expected_value, shap_values.values, instance[selected_features])
+            shap.plots.waterfall(shap_values[0])
             st.pyplot(bbox_inches='tight')
 
-            # SHAP summary plot
-            shap.summary_plot(shap_values.values, instance[selected_features], plot_type="bar")
-            st.pyplot(bbox_inches='tight')
+            # # SHAP force plot
+            # shap.force_plot(explainer.expected_value, shap_values.values, instance[selected_features])
+            # st.pyplot(bbox_inches='tight')
 
-            # SHAP dependence plot
-            for feature in selected_features:
-                shap.dependence_plot(feature, shap_values.values, instance[selected_features])
-                st.pyplot(bbox_inches='tight')
+            # # SHAP summary plot
+            # shap.summary_plot(shap_values.values, instance[selected_features], plot_type="bar")
+            # st.pyplot(bbox_inches='tight')
+
+            # # SHAP dependence plot
+            # for feature in selected_features:
+            #     shap.dependence_plot(feature, shap_values.values, instance[selected_features])
+            #     st.pyplot(bbox_inches='tight')
 
         else:
             st.write("ID不存在，请重新输入")
