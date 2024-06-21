@@ -76,7 +76,7 @@ if st.session_state.model_fitted and st.session_state.predictor:
 
         if user_id in df[id_var].values:
             instance = df[df[id_var] == user_id].iloc[0]
-            model_to_explain = predictor._trainer.load_model('WeightedEnsemble_L2')
+            model_to_explain = st.session_state.predictor._trainer.load_model('WeightedEnsemble_L2')
             explainer = shap.Explainer(model_to_explain)
             shap_values = explainer(instance[selected_features])
             shap.plots.waterfall(shap_values[0])
