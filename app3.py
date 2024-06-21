@@ -16,12 +16,15 @@ uploaded_file = st.file_uploader("上传 CSV 或 XLSX 文件", type=["csv", "xls
 if use_default_data:
     # 使用默认文件
     df = pd.read_csv("data_alive.csv")
+    st.write('数据读取成功！')
 else:
     if uploaded_file is not None:
         if uploaded_file.name.endswith('.csv'):
             df = pd.read_csv(uploaded_file)
+            st.write('数据读取成功！')
         else:
             df = pd.read_excel(uploaded_file)
+            st.write('数据读取成功！')
     else:
         df = None  # 如果没有上传文件且没有选择使用默认数据，那么数据框为空
 
@@ -52,7 +55,7 @@ if df is not None:
         plt.figure(figsize=(10, 6))
         st.pyplot(plt.gcf())
     plot_feature_importance('WeightedEnsemble_L2')
-
+    
 else:
     st.write("请上传文件或者使用默认数据")
 
