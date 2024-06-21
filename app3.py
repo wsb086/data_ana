@@ -17,6 +17,7 @@ if use_default_data:
     # 使用默认文件
     df = pd.read_csv("data_alive.csv")
     st.write('数据读取成功！')
+    st.write(df.head(5))
 else:
     if uploaded_file is not None:
         if uploaded_file.name.endswith('.csv'):
