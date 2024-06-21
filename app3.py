@@ -67,11 +67,12 @@ if st.session_state.data_condition:
             st.pyplot(plt.gcf())
 
         plot_feature_importance('WeightedEnsemble_L2')
-if st.session_state.model_fitted and st.session_state.predictor:
+shap_explain = st.button("开始解释")
+if st.session_state.model_fitted and st.session_state.predictor and shap_explain:
     model_to_explain=st.session_state.predictor._trainer.load_model('WeightedEnsemble_L2')
     explainer = shap.Explainer(model_to_explain.predict, st.session_state.dataset)
-    shap_values = explainer(dataset)
-    shap.summary_plot(shap_values, dataset)
+    shap_values = explainer(st.session_state.dataset)
+    shap.summary_plot(shap_values, st.session_state.dataset)
     st.pyplot(bbox_inches='tight')
 # if st.session_state.model_fitted and st.session_state.predictor:
 #     user_id = st.text_input("输入ID进行SHAP解释")
