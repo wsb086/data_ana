@@ -66,28 +66,33 @@ if st.session_state.data_condition:
             st.pyplot(plt.gcf())
 
         plot_feature_importance('WeightedEnsemble_L2')
+
 if st.session_state.model_fitted and st.session_state.predictor:
-    user_id = int(st.text_input("输入ID进行SHAP解释"))
+    user_id = st.text_input("输入ID进行SHAP解释")
     if user_id:
+        # 确保用户输入的ID和数据框中的ID类型一致
+        user_id = str(user_id)
+        df[id_var] = df[id_var].astype(str)
+
         if user_id in df[id_var].values:
             instance = df[df[id_var] == user_id].iloc[0]
             st.write(f"选择的实例: {instance.to_dict()}")
-            
+
             # 创建SHAP解释器
             explainer = shap.Explainer(st.session_state.predictor.model)
             shap_values = explainer(instance[selected_features])
-            
+
             # 生成并展示SHAP图
             st.subheader("SHAP解释图")
-            
+
             # SHAP force plot
             shap.force_plot(explainer.expected_value, shap_values.values, instance[selected_features])
             st.pyplot(bbox_inches='tight')
-            
+
             # SHAP summary plot
             shap.summary_plot(shap_values.values, instance[selected_features], plot_type="bar")
             st.pyplot(bbox_inches='tight')
-            
+
             # SHAP dependence plot
             for feature in selected_features:
                 shap.dependence_plot(feature, shap_values.values, instance[selected_features])
