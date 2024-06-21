@@ -24,6 +24,8 @@ if 'model_condition' not in st.session_state:
     st.session_state.model_condition = False
 if 'id_var' not in st.session_state:
     st.session_state.id_var = False
+if 'target_var' not in st.session_state:
+    st.session_state.target_var = False
 if 'selected_features' not in st.session_state:
     st.session_state.selected_features = False
 
@@ -71,6 +73,7 @@ elif page == "模型拟合":
         id_var = st.selectbox("选择ID变量", df.columns)
         st.session_state.id_var=id_var
         target_var = st.selectbox("选择因变量", [col for col in df.columns if col != id_var])
+        st.session_state.target_var=target_var
         default_features = [col for col in df.columns if col not in [id_var, target_var]]
         selected_features = st.multiselect("选择自变量", default_features, default=default_features)
         st.session_state.selected_features=selected_features
@@ -145,12 +148,11 @@ elif page == "单条数据解释":
                         random_state = st.number_input("请输入背景数据随机种子 (random_state)", value=42)
                         background_sample_size = st.slider("请选择背景数据采样数", min_value=5000, max_value=20000, value=10000, step=1000)
                         shap_explain_single = st.button("解释该数据")
-                        st.session_state.selected_features
                         if shap_explain_single:
                             model_to_explain = st.session_state.predictor._trainer.load_model('WeightedEnsemble_L2')
                             background_data = st.session_state.dataset.sample(n=background_sample_size, random_state=random_state)
                             explainer = shap.Explainer(model_to_explain.predict, background_data)
-                            shap_values_single = explainer(single_data[st.session_state.selected_features])
+                            shap_values_single = explainer(single_data[st.session_state.selected_features+[st.session_state.target_var]])
                             
                             # 在一个新容器中显示 SHAP force_plot
                             with st.container():
