@@ -5,7 +5,7 @@ import matplotlib.pyplot as plt
 import seaborn as sns
 import warnings
 from autogluon.tabular import TabularDataset, TabularPredictor
-
+st.set_option('deprecation.showPyplotGlobalUse', False)
 warnings.filterwarnings('ignore')
 sns.set_theme(style="whitegrid", palette="deep")
 
@@ -71,6 +71,7 @@ if st.session_state.data_condition:
         st.session_state.model_condition=True
 else:
     st.write("请上传文件或者使用默认数据")
+
 if st.session_state.model_condition:
     shap_explain = st.button("开始解释")
     if shap_explain:
@@ -79,28 +80,8 @@ if st.session_state.model_condition:
         explainer = shap.Explainer(model_to_explain.predict, background_data)
         sample_data = st.session_state.dataset.sample(n=10)
         shap_values = explainer(sample_data)
-        shap.summary_plot(shap_values, sample_data)
-        st.pyplot(bbox_inches='tight')
-# if st.session_state.model_fitted and st.session_state.predictor:
-#     user_id = st.text_input("输入ID进行SHAP解释")
-#     if user_id:
-#         # 确保用户输入的ID和数据框中的ID类型一致
-#         user_id = str(user_id)
-#         df[id_var] = df[id_var].astype(str)
-
-#         if user_id in df[id_var].values:
-#             instance = df[df[id_var] == user_id].iloc[0].to_frame().T
-#             model_to_explain = st.session_state.predictor._trainer.load_model('WeightedEnsemble_L2')
-
-#             # 封装模型，使其成为可调用对象
-#             def model_predict(X):
-#                 return model_to_explain.predict_proba(X)
-
-#             explainer = shap.Explainer(model_predict, df[selected_features])
-#             shap_values = explainer(instance[selected_features])
-#             shap.plots.waterfall(shap_values[0])
-#             st.pyplot(bbox_inches='tight')
-
-#         else:
-#             st.write("ID不存在，请重新输入")
-
+        
+        # 使用一个新的容器来显示 SHAP 图
+        with st.container():
+            shap.summary_plot(shap_values, sample_data)
+            st.pyplot(bbox_inches='tight')
