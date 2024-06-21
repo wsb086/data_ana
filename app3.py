@@ -20,6 +20,8 @@ if 'model_fitted' not in st.session_state:
     st.session_state.model_fitted = False
 if 'dataset' not in st.session_state:
     st.session_state.dataset = False
+if 'model_condition' not in st.session_state:
+    st.session_state.model_condition = False
 use_default_data = st.button("使用默认数据")
 
 uploaded_file = st.file_uploader("上传 CSV 或 XLSX 文件", type=["csv", "xlsx"])
@@ -65,9 +67,12 @@ if st.session_state.data_condition:
             plt.xlabel('Importance')
             plt.ylabel('Features')
             st.pyplot(plt.gcf())
-
         plot_feature_importance('WeightedEnsemble_L2')
-shap_explain = st.button("开始解释")
+        st.session_state.model_condition=True
+else:
+    st.write("请上传文件或者使用默认数据")
+if st.session_state.model_condition:
+    shap_explain = st.button("开始解释")
 if st.session_state.model_fitted and st.session_state.predictor and shap_explain:
     model_to_explain=st.session_state.predictor._trainer.load_model('WeightedEnsemble_L2')
     background_data = st.session_state.dataset.sample(n=5000, random_state=1)
@@ -98,5 +103,4 @@ if st.session_state.model_fitted and st.session_state.predictor and shap_explain
 
 #         else:
 #             st.write("ID不存在，请重新输入")
-else:
-    st.write("请上传文件或者使用默认数据")
+
