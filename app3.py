@@ -46,7 +46,7 @@ if data_condition:
     selected_features = st.multiselect("选择自变量", default_features, default=[])
     df_s=df[selected_features+[id_var,target_var]]
     fit_begin = st.button("开始拟合模型！")
-    if fit_begin and:
+    if fit_begin:
         dataset = TabularDataset(df_s)
         predictor = TabularPredictor(label=target_var, problem_type='regression').fit(dataset,hyperparameters={'GBM':{},'XGB':{}})
         predictions = predictor.predict(dataset)
