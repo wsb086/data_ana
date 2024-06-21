@@ -5,6 +5,7 @@ import matplotlib.pyplot as plt
 import seaborn as sns
 import warnings
 from autogluon.tabular import TabularDataset, TabularPredictor
+import streamlit.components.v1 as components
 st.set_option('deprecation.showPyplotGlobalUse', False)
 warnings.filterwarnings('ignore')
 sns.set_theme(style="whitegrid", palette="deep")
@@ -123,12 +124,15 @@ elif page == "模型解释":
             
             # 在一个新容器中显示 SHAP 图
             with st.container():
-                st.subheader('summary_plot')
-                shap.summary_plot(shap_values, sample_data)
-                st.pyplot(bbox_inches='tight')
-                st.subheader('bar_plot')
-                shap.plots.bar(shap_values)
-                st.pyplot(bbox_inches='tight')
+                st.subheader('force_plot')
+                shap.initjs()
+                force_plot_html = shap.force_plot(shap_values_single[0], show=False)
+                components.html(force_plot_html.html(), height=500)
+    
+                st.subheader('waterfall_plot')
+                fig, ax = plt.subplots()
+                shap.plots.waterfall(shap_values_single[0], ax=ax)
+                st.pyplot(fig)
     else:
         st.write("请先完成模型拟合")
 elif page == "单条数据解释":
