@@ -18,7 +18,8 @@ if 'predictor' not in st.session_state:
     st.session_state.predictor = None
 if 'model_fitted' not in st.session_state:
     st.session_state.model_fitted = False
-
+if 'dataset' not in st.session_state:
+    st.session_state.dataset = False
 use_default_data = st.button("使用默认数据")
 
 uploaded_file = st.file_uploader("上传 CSV 或 XLSX 文件", type=["csv", "xlsx"])
@@ -49,14 +50,14 @@ if st.session_state.data_condition:
 
     if fit_begin:
         df_s = df[selected_features + [target_var]]
-        dataset = TabularDataset(df_s)
-        predictor = TabularPredictor(label=target_var, problem_type='regression').fit(dataset, hyperparameters={'GBM': {}, 'XGB': {}})
+        st.session_state.dataset = TabularDataset(df_s)
+        predictor = TabularPredictor(label=target_var, problem_type='regression').fit(st.session_state.dataset, hyperparameters={'GBM': {}, 'XGB': {}})
         st.session_state.predictor = predictor
         st.session_state.model_fitted = True
         st.write('模型拟合成功!')
 
         def plot_feature_importance(model_name):
-            importance_df = predictor.feature_importance(data=dataset, model=model_name)
+            importance_df = predictor.feature_importance(data=st.session_state.dataset, model=model_name)
             top10_features = importance_df.head(10)
             plt.figure(figsize=(10, 6))
             sns.barplot(x=top10_features['importance'], y=top10_features.index)
@@ -66,28 +67,33 @@ if st.session_state.data_condition:
             st.pyplot(plt.gcf())
 
         plot_feature_importance('WeightedEnsemble_L2')
-
 if st.session_state.model_fitted and st.session_state.predictor:
-    user_id = st.text_input("输入ID进行SHAP解释")
-    if user_id:
-        # 确保用户输入的ID和数据框中的ID类型一致
-        user_id = str(user_id)
-        df[id_var] = df[id_var].astype(str)
+    model_to_explain=st.session_state.predictor._trainer.load_model('WeightedEnsemble_L2')
+    explainer = shap.Explainer(model_to_explain.predict, st.session_state.dataset)
+    shap_values = explainer(dataset)
+    shap.summary_plot(shap_values, dataset)
+    st.pyplot(bbox_inches='tight')
+# if st.session_state.model_fitted and st.session_state.predictor:
+#     user_id = st.text_input("输入ID进行SHAP解释")
+#     if user_id:
+#         # 确保用户输入的ID和数据框中的ID类型一致
+#         user_id = str(user_id)
+#         df[id_var] = df[id_var].astype(str)
 
-        if user_id in df[id_var].values:
-            instance = df[df[id_var] == user_id].iloc[0].to_frame().T
-            model_to_explain = st.session_state.predictor._trainer.load_model('WeightedEnsemble_L2')
+#         if user_id in df[id_var].values:
+#             instance = df[df[id_var] == user_id].iloc[0].to_frame().T
+#             model_to_explain = st.session_state.predictor._trainer.load_model('WeightedEnsemble_L2')
 
-            # 封装模型，使其成为可调用对象
-            def model_predict(X):
-                return model_to_explain.predict_proba(X)
+#             # 封装模型，使其成为可调用对象
+#             def model_predict(X):
+#                 return model_to_explain.predict_proba(X)
 
-            explainer = shap.Explainer(model_predict, df[selected_features])
-            shap_values = explainer(instance[selected_features])
-            shap.plots.waterfall(shap_values[0])
-            st.pyplot(bbox_inches='tight')
+#             explainer = shap.Explainer(model_predict, df[selected_features])
+#             shap_values = explainer(instance[selected_features])
+#             shap.plots.waterfall(shap_values[0])
+#             st.pyplot(bbox_inches='tight')
 
-        else:
-            st.write("ID不存在，请重新输入")
+#         else:
+#             st.write("ID不存在，请重新输入")
 else:
     st.write("请上传文件或者使用默认数据")
