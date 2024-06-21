@@ -124,15 +124,12 @@ elif page == "模型解释":
             
             # 在一个新容器中显示 SHAP 图
             with st.container():
-                st.subheader('force_plot')
-                shap.initjs()
-                force_plot_html = shap.force_plot(shap_values_single[0], show=False)
-                components.html(force_plot_html.html(), height=500)
-    
-                st.subheader('waterfall_plot')
-                fig, ax = plt.subplots()
-                shap.plots.waterfall(shap_values_single[0], ax=ax)
-                st.pyplot(fig)
+                st.subheader('summary_plot')
+                shap.summary_plot(shap_values, sample_data)
+                st.pyplot(bbox_inches='tight')
+                st.subheader('bar_plot')
+                shap.plots.bar(shap_values)
+                st.pyplot(bbox_inches='tight')
     else:
         st.write("请先完成模型拟合")
 elif page == "单条数据解释":
@@ -163,11 +160,17 @@ elif page == "单条数据解释":
                                 st.subheader('force_plot')
                                 shap.initjs()
                                 force_plot_html = shap.force_plot(shap_values_single[0], show=False)
-                                st.components.v1.html(force_plot_html.html(), height=500)
+
+                                # Save the force_plot to an HTML file and read it
+                                with open("force_plot.html", "w") as f:
+                                    f.write(force_plot_html.html())
+
+                                with open("force_plot.html", "r") as f:
+                                    components.html(f.read(), height=500)
 
                                 st.subheader('waterfall_plot')
                                 shap.plots.waterfall(shap_values_single[0])
-                                st.pyplot(fig)
+                                st.pyplot(bbox_inches='tight')
                     else:
                         st.write("未找到相应的数据，请检查ID是否正确。")
                 except ValueError:
