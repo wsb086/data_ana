@@ -73,14 +73,14 @@ else:
     st.write("请上传文件或者使用默认数据")
 if st.session_state.model_condition:
     shap_explain = st.button("开始解释")
-if st.session_state.model_fitted and st.session_state.predictor and shap_explain:
-    model_to_explain=st.session_state.predictor._trainer.load_model('WeightedEnsemble_L2')
-    background_data = st.session_state.dataset.sample(n=5000, random_state=1)
-    explainer = shap.Explainer(model_to_explain.predict, background_data)
-    sample_data = st.session_state.dataset.sample(n=10)
-    shap_values = explainer(sample_data)
-    shap.summary_plot(shap_values, sample_data)
-    st.pyplot(bbox_inches='tight')
+    if shap_explain:
+        model_to_explain=st.session_state.predictor._trainer.load_model('WeightedEnsemble_L2')
+        background_data = st.session_state.dataset.sample(n=5000, random_state=1)
+        explainer = shap.Explainer(model_to_explain.predict, background_data)
+        sample_data = st.session_state.dataset.sample(n=10)
+        shap_values = explainer(sample_data)
+        shap.summary_plot(shap_values, sample_data)
+        st.pyplot(bbox_inches='tight')
 # if st.session_state.model_fitted and st.session_state.predictor:
 #     user_id = st.text_input("输入ID进行SHAP解释")
 #     if user_id:
