@@ -157,16 +157,16 @@ elif page == "单条数据解释":
                             
                             # 在一个新容器中显示 SHAP force_plot
                             with st.container():
-                                st.subheader('force_plot')
-                                shap.initjs()
-                                force_plot_html = shap.force_plot(shap_values_single[0], show=False)
+                                # st.subheader('force_plot')
+                                # shap.initjs()
+                                # force_plot_html = shap.force_plot(shap_values_single[0], show=False)
 
-                                # Save the force_plot to an HTML file and read it
-                                with open("force_plot.html", "w") as f:
-                                    f.write(force_plot_html.html())
+                                # # Save the force_plot to an HTML file and read it
+                                # with open("force_plot.html", "w") as f:
+                                #     f.write(force_plot_html.html())
 
-                                with open("force_plot.html", "r") as f:
-                                    components.html(f.read(), height=500)
+                                # with open("force_plot.html", "r") as f:
+                                #     components.html(f.read(), height=500)
 
                                 st.subheader('waterfall_plot')
                                 shap.plots.waterfall(shap_values_single[0])
