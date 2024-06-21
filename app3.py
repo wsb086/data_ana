@@ -157,7 +157,10 @@ elif page == "单条数据解释":
                             # 在一个新容器中显示 SHAP force_plot
                             with st.container():
                                 st.subheader('force_plot')
-                                shap.force_plot(explainer.expected_value, shap_values_single.values, single_data[selected_features], matplotlib=True)
+                                shap.force_plot(shap_values_single[0])
+                                st.pyplot(bbox_inches='tight')
+                                st.subheader('waterfall_plot')
+                                shap.plots.waterfall(shap_values_single[0])
                                 st.pyplot(bbox_inches='tight')
                     else:
                         st.write("未找到相应的数据，请检查ID是否正确。")
