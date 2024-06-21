@@ -79,7 +79,7 @@ elif page == "模型拟合":
             if df is not None:
                 st.session_state.df = df
                 st.write(message)
-                st.write(df)
+                st.write(df.shape)
                 st.session_state.data_condition = True
             else:
                 st.write(message)
