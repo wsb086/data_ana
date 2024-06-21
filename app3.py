@@ -109,7 +109,7 @@ elif page == "模型解释":
             model_to_explain = st.session_state.predictor._trainer.load_model('WeightedEnsemble_L2')
             background_data = st.session_state.dataset.sample(n=background_sample_size, random_state=random_state1)
             explainer = shap.Explainer(model_to_explain.predict, background_data)
-            sample_data = st.session_state.dataset.sample(n=sample_data_size,, random_state=random_state1)
+            sample_data = st.session_state.dataset.sample(n=sample_data_size,random_state=random_state1)
             shap_values = explainer(sample_data)
             
             # 在一个新容器中显示 SHAP 图
