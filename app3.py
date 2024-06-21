@@ -115,7 +115,17 @@ elif page == "模型拟合":
             st.session_state.predictor = predictor
             st.session_state.model_fitted = True
             st.write('模型拟合成功!')
+            predictions = predictor.predict(st.session_state.dataset)
+            true_values = df_s[target_var]
 
+            # 绘制真实值和预测值的散点图
+            plt.figure(figsize=(10, 6))
+            plt.scatter(true_values, predictions, alpha=0.5)
+            plt.xlabel('真实值')
+            plt.ylabel('预测值')
+            plt.title('真实值 vs 预测值')
+            plt.plot([true_values.min(), true_values.max()], [true_values.min(), true_values.max()], 'k--', lw=2)
+            st.pyplot(plt.gcf())
             def plot_feature_importance(model_name):
                 importance_df = predictor.feature_importance(data=st.session_state.dataset, model=model_name)
                 top10_features = importance_df.head(10)
