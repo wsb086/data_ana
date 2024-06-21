@@ -134,7 +134,7 @@ elif page == "单条数据解释":
     if st.session_state.model_condition:
         df = st.session_state.df
         
-        if id_var:
+        if st.session_state.id_var:
             selected_id = st.text_input("输入数据ID")
             
             if selected_id:
