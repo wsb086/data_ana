@@ -67,21 +67,25 @@ if st.session_state.data_condition:
             plt.xlabel('Importance')
             plt.ylabel('Features')
             st.pyplot(plt.gcf())
-        plot_feature_importance('WeightedEnsemble_L2')
-        st.session_state.model_condition=True
+        
+        # 在一个容器中显示特征重要性图
+        with st.container():
+            plot_feature_importance('WeightedEnsemble_L2')
+        
+        st.session_state.model_condition = True
 else:
     st.write("请上传文件或者使用默认数据")
 
 if st.session_state.model_condition:
     shap_explain = st.button("开始解释")
     if shap_explain:
-        model_to_explain=st.session_state.predictor._trainer.load_model('WeightedEnsemble_L2')
+        model_to_explain = st.session_state.predictor._trainer.load_model('WeightedEnsemble_L2')
         background_data = st.session_state.dataset.sample(n=5000, random_state=1)
         explainer = shap.Explainer(model_to_explain.predict, background_data)
         sample_data = st.session_state.dataset.sample(n=10)
         shap_values = explainer(sample_data)
         
-        # 使用一个新的容器来显示 SHAP 图
+        # 在一个新容器中显示 SHAP 图
         with st.container():
             shap.summary_plot(shap_values, sample_data)
             st.pyplot(bbox_inches='tight')
