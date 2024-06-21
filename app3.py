@@ -67,9 +67,7 @@ if st.session_state.data_condition:
 
         plot_feature_importance('WeightedEnsemble_L2')
 if st.session_state.model_fitted and st.session_state.predictor:
-    user_id = st.text_input("输入ID进行SHAP解释")
-    st.write(type(user_id))
-    st.write(type(df[id_var].values[0]))
+    user_id = int(st.text_input("输入ID进行SHAP解释"))
     if user_id:
         if user_id in df[id_var].values:
             instance = df[df[id_var] == user_id].iloc[0]
