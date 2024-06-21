@@ -32,6 +32,7 @@ else:
 if df is not None:
     st.write(df)
     # 选择ID变量
+    df_s=None
     id_var = st.selectbox("选择ID变量", df.columns)
     
     # 选择因变量
@@ -41,20 +42,23 @@ if df is not None:
     default_features = [col for col in df.columns if col not in [id_var, target_var]]
     selected_features = st.multiselect("选择自变量", default_features, default=default_features)
     df_s=df[selected_features+[id_var,target_var]]
-    dataset = TabularDataset(df_s)
-    predictor = TabularPredictor(label=target_var, problem_type='regression').fit(dataset,hyperparameters={'GBM':{},'XGB':{}})
-    predictions = predictor.predict(dataset)
-    st.write('模型拟合成功!')
-    def plot_feature_importance(model_name):
-        importance_df = predictor.feature_importance(data=dataset, model=model_name)
-        top10_features = importance_df.head(10)
-        myfig=sns.barplot(x=top10_features['importance'], y=top10_features.index)
-        myfig.set_title(f'{model_name} Top 10 Features')
-        myfig.set_xlabel('Importance')
-        myfig.set_ylabel('Features')
-        plt.figure(figsize=(10, 6))
-        st.pyplot(plt.gcf())
-    plot_feature_importance('WeightedEnsemble_L2')
+    if df_s is not None:
+        fit_begin = st.button("开始拟合模型！")
+        if fit begin:
+            dataset = TabularDataset(df_s)
+            predictor = TabularPredictor(label=target_var, problem_type='regression').fit(dataset,hyperparameters={'GBM':{},'XGB':{}})
+            predictions = predictor.predict(dataset)
+            st.write('模型拟合成功!')
+            def plot_feature_importance(model_name):
+                importance_df = predictor.feature_importance(data=dataset, model=model_name)
+                top10_features = importance_df.head(10)
+                myfig=sns.barplot(x=top10_features['importance'], y=top10_features.index)
+                myfig.set_title(f'{model_name} Top 10 Features')
+                myfig.set_xlabel('Importance')
+                myfig.set_ylabel('Features')
+                plt.figure(figsize=(10, 6))
+                st.pyplot(plt.gcf())
+            plot_feature_importance('WeightedEnsemble_L2')
     
 else:
     st.write("请上传文件或者使用默认数据")
