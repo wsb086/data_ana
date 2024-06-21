@@ -54,16 +54,34 @@ elif page == "模型拟合":
 
     uploaded_file = st.file_uploader("上传 CSV 或 XLSX 文件", type=["csv", "xlsx"])
 
+    def read_csv_with_fallback(file_path_or_buffer):
+        encodings = ['utf-8', 'gbk']
+        for encoding in encodings:
+            try:
+                df = pd.read_csv(file_path_or_buffer, encoding=encoding)
+                return df, f'数据读取成功！使用编码: {encoding}'
+            except UnicodeDecodeError:
+                continue
+        return None, '数据读取失败，无法识别编码。'
+
     if use_default_data:
-        st.session_state.df = pd.read_csv("data_alive.csv")
-        st.write('数据读取成功！')
-        st.write(st.session_state.df.head(5))
-        st.session_state.data_condition = True
+        df, message = read_csv_with_fallback("data_alive.csv")
+        if df is not None:
+            st.session_state.df = df
+            st.write(message)
+            st.write(st.session_state.df.head(5))
+            st.session_state.data_condition = True
+        else:
+            st.write(message)
     elif uploaded_file is not None:
         if uploaded_file.name.endswith('.csv'):
-            st.session_state.df = pd.read_csv(uploaded_file)
-            st.write('数据读取成功！')
-            st.session_state.data_condition = True
+            df, message = read_csv_with_fallback(uploaded_file)
+            if df is not None:
+                st.session_state.df = df
+                st.write(message)
+                st.session_state.data_condition = True
+            else:
+                st.write(message)
         else:
             st.session_state.df = pd.read_excel(uploaded_file)
             st.write('数据读取成功！')
