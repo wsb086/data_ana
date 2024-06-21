@@ -100,12 +100,16 @@ elif page == "模型解释":
     st.title("模型解释")
 
     if st.session_state.model_condition:
-        shap_explain = st.button("开始解释")
+        random_state1 = st.number_input("请输入背景数据随机种子 (random_state)", value=42)
+        background_sample_size = st.slider("请选择背景数据采样数", min_value=100, max_value=15000, value=7500, step=100)
+        random_state2 = st.number_input("请输入样本数据随机种子 (random_state)", value=42)
+        sample_data_size = st.slider("请选择样本数据采样数", min_value=1, max_value=50, value=25, step=1)
+        shap_explain = st.button("开始解释！")
         if shap_explain:
             model_to_explain = st.session_state.predictor._trainer.load_model('WeightedEnsemble_L2')
-            background_data = st.session_state.dataset.sample(n=5000, random_state=1)
+            background_data = st.session_state.dataset.sample(n=background_sample_size, random_state=random_state1)
             explainer = shap.Explainer(model_to_explain.predict, background_data)
-            sample_data = st.session_state.dataset.sample(n=10)
+            sample_data = st.session_state.dataset.sample(n=sample_data_size,, random_state=random_state1)
             shap_values = explainer(sample_data)
             
             # 在一个新容器中显示 SHAP 图
