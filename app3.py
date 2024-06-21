@@ -35,7 +35,7 @@ page = st.sidebar.selectbox("导航", ["Home", "模型拟合", "模型解释","�
 
 if page == "Home":
     st.title("欢迎使用数据分析工具")
-    st.image("mypic.jpg", caption='good luck!', use_column_width=True)
+    st.image("bokebi.jpg", caption='good luck!', width=100)
     st.markdown("""
     ### 介绍
     这是一个用于数据分析和机器学习模型拟合与解释的工具。你可以通过侧边栏导航到不同的功能页面。
