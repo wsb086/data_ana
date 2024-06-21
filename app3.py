@@ -79,13 +79,14 @@ elif page == "模型拟合":
             if df is not None:
                 st.session_state.df = df
                 st.write(message)
-                st.write(df.shape)
+                st.write(st.session_state.df.head(5))
                 st.session_state.data_condition = True
             else:
                 st.write(message)
         else:
             st.session_state.df = pd.read_excel(uploaded_file)
             st.write('数据读取成功！')
+            st.write(st.session_state.df.head(5))
             st.session_state.data_condition = True
 
     if st.session_state.data_condition:
