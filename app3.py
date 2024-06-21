@@ -161,12 +161,12 @@ elif page == "单条数据解释":
                             # 在一个新容器中显示 SHAP force_plot
                             with st.container():
                                 st.subheader('force_plot')
+                                shap.initjs()
                                 force_plot_html = shap.force_plot(shap_values_single[0], show=False)
                                 st.components.v1.html(force_plot_html.html(), height=500)
 
                                 st.subheader('waterfall_plot')
-                                fig, ax = plt.subplots()
-                                shap.plots.waterfall(shap_values_single[0], ax=ax)
+                                shap.plots.waterfall(shap_values_single[0])
                                 st.pyplot(fig)
                     else:
                         st.write("未找到相应的数据，请检查ID是否正确。")
