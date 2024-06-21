@@ -121,9 +121,9 @@ elif page == "模型拟合":
             # 绘制真实值和预测值的散点图
             plt.figure(figsize=(10, 6))
             plt.scatter(true_values, predictions, alpha=0.5)
-            plt.xlabel('真实值')
-            plt.ylabel('预测值')
-            plt.title('真实值 vs 预测值')
+            plt.xlabel('ground truth')
+            plt.ylabel('predict')
+            plt.title('groud truth vs predict')
             plt.plot([true_values.min(), true_values.max()], [true_values.min(), true_values.max()], 'k--', lw=2)
             st.pyplot(plt.gcf())
             def plot_feature_importance(model_name):
