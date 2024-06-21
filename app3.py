@@ -16,6 +16,9 @@ if 'df' not in st.session_state:
     st.session_state.df = None
 if 'predictor' not in st.session_state:
     st.session_state.predictor = None
+if 'model_fitted' not in st.session_state:
+    st.session_state.model_fitted = False
+
 use_default_data = st.button("使用默认数据")
 
 uploaded_file = st.file_uploader("上传 CSV 或 XLSX 文件", type=["csv", "xlsx"])
@@ -48,7 +51,8 @@ if st.session_state.data_condition:
         df_s = df[selected_features + [id_var, target_var]]
         dataset = TabularDataset(df_s)
         predictor = TabularPredictor(label=target_var, problem_type='regression').fit(dataset, hyperparameters={'GBM': {}, 'XGB': {}})
-        predictions = predictor.predict(dataset)
+        st.session_state.predictor = predictor
+        st.session_state.model_fitted = True
         st.write('模型拟合成功!')
 
         def plot_feature_importance(model_name):
@@ -62,31 +66,35 @@ if st.session_state.data_condition:
             st.pyplot(plt.gcf())
 
         plot_feature_importance('WeightedEnsemble_L2')
-    if st.session_state.predictor:
-        user_id = st.text_input("输入ID进行SHAP解释")
-        if user_id:
-            if user_id in df[id_var].values:
-                instance = df[df[id_var] == user_id].iloc[0]
-                st.write(f"选择的实例: {instance.to_dict()}")
-                
-                # 创建SHAP解释器
-                explainer = shap.Explainer(st.session_state.predictor.model)
-                shap_values = explainer(instance[selected_features])
-                
-                # 生成并展示SHAP图
-                st.subheader("SHAP解释图")
-                
-                # SHAP force plot
-                st.pyplot(shap.force_plot(explainer.expected_value, shap_values.values, instance[selected_features], matplotlib=True))
-                
-                # SHAP summary plot
-                st.pyplot(shap.summary_plot(shap_values.values, instance[selected_features], plot_type="bar"))
-                
-                # SHAP dependence plot
-                for feature in selected_features:
-                    st.pyplot(shap.dependence_plot(feature, shap_values.values, instance[selected_features], interaction_index=None))
 
-            else:
-                st.write("ID不存在，请重新输入")
+if st.session_state.model_fitted and st.session_state.predictor:
+    user_id = st.text_input("输入ID进行SHAP解释")
+    if user_id:
+        if user_id in df[id_var].values:
+            instance = df[df[id_var] == user_id].iloc[0]
+            st.write(f"选择的实例: {instance.to_dict()}")
+            
+            # 创建SHAP解释器
+            explainer = shap.Explainer(st.session_state.predictor.model)
+            shap_values = explainer(instance[selected_features])
+            
+            # 生成并展示SHAP图
+            st.subheader("SHAP解释图")
+            
+            # SHAP force plot
+            shap.force_plot(explainer.expected_value, shap_values.values, instance[selected_features])
+            st.pyplot(bbox_inches='tight')
+            
+            # SHAP summary plot
+            shap.summary_plot(shap_values.values, instance[selected_features], plot_type="bar")
+            st.pyplot(bbox_inches='tight')
+            
+            # SHAP dependence plot
+            for feature in selected_features:
+                shap.dependence_plot(feature, shap_values.values, instance[selected_features])
+                st.pyplot(bbox_inches='tight')
+
+        else:
+            st.write("ID不存在，请重新输入")
 else:
     st.write("请上传文件或者使用默认数据")
