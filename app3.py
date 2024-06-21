@@ -114,10 +114,10 @@ elif page == "模型解释":
             
             # 在一个新容器中显示 SHAP 图
             with st.container():
+                st.subtitle('summary_plot')
                 shap.summary_plot(shap_values, sample_data)
                 st.pyplot(bbox_inches='tight')
-                shap.plots.beeswarm(shap_values)
-                st.pyplot(bbox_inches='tight')
+                st.subtitle('bar_plot')
                 shap.plots.bar(shap_values)
                 st.pyplot(bbox_inches='tight')
     else:
