@@ -14,7 +14,8 @@ if 'data_condition' not in st.session_state:
     st.session_state.data_condition = False
 if 'df' not in st.session_state:
     st.session_state.df = None
-
+if 'predictor' not in st.session_state:
+    st.session_state.predictor = None
 use_default_data = st.button("使用默认数据")
 
 uploaded_file = st.file_uploader("上传 CSV 或 XLSX 文件", type=["csv", "xlsx"])
