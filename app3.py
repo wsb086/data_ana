@@ -66,7 +66,7 @@ if st.session_state.data_condition:
             st.pyplot(plt.gcf())
 
         plot_feature_importance('WeightedEnsemble_L2')
-
+st.write(df[id_var].values[0])
 if st.session_state.model_fitted and st.session_state.predictor:
     user_id = st.text_input("输入ID进行SHAP解释")
     if user_id:
