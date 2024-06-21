@@ -116,5 +116,9 @@ elif page == "模型解释":
             with st.container():
                 shap.summary_plot(shap_values, sample_data)
                 st.pyplot(bbox_inches='tight')
+                shap.plots.beeswarm(shap_values)
+                st.pyplot(bbox_inches='tight')
+                shap.plots.bar(shap_values)
+                st.pyplot(bbox_inches='tight')
     else:
         st.write("请先完成模型拟合")
