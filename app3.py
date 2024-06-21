@@ -22,6 +22,10 @@ if 'dataset' not in st.session_state:
     st.session_state.dataset = False
 if 'model_condition' not in st.session_state:
     st.session_state.model_condition = False
+if 'id_var' not in st.session_state:
+    st.session_state.id_var = False
+if 'selected_features' not in st.session_state:
+    st.session_state.selected_features = False
 
 # 创建一个导航菜单
 page = st.sidebar.selectbox("导航", ["Home", "模型拟合", "模型解释","单条数据解释"])
@@ -65,10 +69,11 @@ elif page == "模型拟合":
     if st.session_state.data_condition:
         df = st.session_state.df
         id_var = st.selectbox("选择ID变量", df.columns)
+        st.session_state.id_var=id_var
         target_var = st.selectbox("选择因变量", [col for col in df.columns if col != id_var])
         default_features = [col for col in df.columns if col not in [id_var, target_var]]
         selected_features = st.multiselect("选择自变量", default_features, default=default_features)
-
+        st.session_state.selected_features=selected_features
         fit_begin = st.button("开始拟合模型！")
 
         if fit_begin:
@@ -128,25 +133,24 @@ elif page == "单条数据解释":
 
     if st.session_state.model_condition:
         df = st.session_state.df
-        id_var = st.selectbox("选择ID变量", df.columns, key="id_var_single")
         
         if id_var:
             selected_id = st.text_input("输入数据ID")
             
             if selected_id:
                 try:
-                    selected_id = type(df[id_var].iloc[0])(selected_id)  # 转换输入的ID类型以匹配数据类型
-                    single_data = df[df[id_var] == selected_id]
+                    selected_id = type(df[st.session_state.id_var].iloc[0])(selected_id)  # 转换输入的ID类型以匹配数据类型
+                    single_data = df[df[st.session_state.id_var] == selected_id]
                     if not single_data.empty:
                         random_state = st.number_input("请输入背景数据随机种子 (random_state)", value=42)
                         background_sample_size = st.slider("请选择背景数据采样数", min_value=5000, max_value=20000, value=10000, step=1000)
                         shap_explain_single = st.button("解释该数据")
-                        
+                        st.session_state.selected_features
                         if shap_explain_single:
                             model_to_explain = st.session_state.predictor._trainer.load_model('WeightedEnsemble_L2')
                             background_data = st.session_state.dataset.sample(n=background_sample_size, random_state=random_state)
                             explainer = shap.Explainer(model_to_explain.predict, background_data)
-                            shap_values_single = explainer(single_data[selected_features])
+                            shap_values_single = explainer(single_data[st.session_state.selected_features])
                             
                             # 在一个新容器中显示 SHAP force_plot
                             with st.container():
