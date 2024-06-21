@@ -75,12 +75,12 @@ if st.session_state.model_fitted and st.session_state.predictor:
         df[id_var] = df[id_var].astype(str)
 
         if user_id in df[id_var].values:
-            instance = df[df[id_var] == user_id].iloc[0]
+            instance = df[df[id_var] == user_id].iloc[0].to_frame().T
             model_to_explain = st.session_state.predictor._trainer.load_model('WeightedEnsemble_L2')
 
             # 封装模型，使其成为可调用对象
             def model_predict(X):
-                return model_to_explain.predict(X)
+                return model_to_explain.predict_proba(X)
 
             explainer = shap.Explainer(model_predict, df[selected_features])
             shap_values = explainer(instance[selected_features])
